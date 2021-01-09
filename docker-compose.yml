@@ -31,32 +31,37 @@ services:
     depends_on:
       - rabbit
 
-  rabbit:
-    image: rabbitmq:3-management-alpine
-    container_name: rabbit
-    hostname: rabbit
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: mosquitto
+    hostname: mosquitto
     restart: always
-    env_file:
-      - .env
+    volumes:
+      - ./conf/mosquitto:/mosquitto/config
+      - ./data/mosquitto:/mosquitto/data
+      - ./logs/mosquitto:/mosquitto/log
     ports:
       - 1883:1883
-      - 8883:8883
-      - 18883:18883
-      - 127.0.0.1:5671:5671
-      - 127.0.0.1:5672:5672
-      - 127.0.0.1:15672:15672
-      - 127.0.0.1:15692:15692
-    cap_add:
-      - ALL
+      - 9001:9001
+    networks:
+      - backend
+    depends_on:
+      - portainer
+
+  node-red:
+    image: nodered/node-red:latest
+    container_name: nodered
+    restart: always
+    environment:
+      - TZ=Europe/Moscow
+    ports:
+      - 1880:1880
     networks:
       - backend
     volumes:
-      - ./conf/rabbit:/etc/rabbitmq
-      - ./conf/certbot/archive/iotm.tk:/etc/rabbitmq/certs
-      - ./data/rabbit:/var/lib/rabbitmq
-      - ./logs/rabbit:/var/log/rabbitmq
+      - ./data/nodered:/data
     depends_on:
-      - portainer
+      - mosquitto
 
   portainer:
     image: portainer/portainer:latest
