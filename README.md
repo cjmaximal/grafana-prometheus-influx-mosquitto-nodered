@@ -1,3 +1,3 @@
 ### rabbit-prometheus-influx-grafana
 
-# MQTT docker boilerplate: portainer, nginx, certbot, RabbitMQ, Grafana, Prometheus, Telegraf, InfluxDB
+# MQTT docker boilerplate: portainer, nginx, certbot, Grafana, Prometheus, Telegraf, InfluxDB, Node-Red, Mosquitto
